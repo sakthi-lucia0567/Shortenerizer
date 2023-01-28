@@ -2,6 +2,8 @@ const { urlencoded } = require("express");
 const express = require("express");
 const mongoose = require("mongoose");
 const shortUrl = require("./models/shortUrl");
+const path = require("path");
+
 require("dotenv").config();
 
 const app = express();
@@ -19,7 +21,7 @@ mongoose
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
-
+app.use(express.static(path.join(__dirname, "public")));
 app.get("/", async (req, res) => {
   const shortUrls = await shortUrl.find();
   res.render("index", { shortUrls: shortUrls });
@@ -40,5 +42,9 @@ app.get("/:shortUrl", async (req, res) => {
 
   res.redirect(shortUrls.full);
 });
+
+// app.get("/app", (req, res) => {
+//   res.render("app");
+// });
 
 app.listen(process.env.PORT || 5000);
